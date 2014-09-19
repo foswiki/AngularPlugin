@@ -4,8 +4,8 @@ package Foswiki::Plugins::AngularPlugin::Mocks;
 use strict;
 use warnings;
 
-use Foswiki::Plugins::JQueryPlugin::Plugin ();
-our @ISA = qw( Foswiki::Plugins::JQueryPlugin::Plugin );
+use Foswiki::Plugins::AngularPlugin::Module ();
+our @ISA = qw( Foswiki::Plugins::AngularPlugin::Module );
 
 sub new {
   my $class = shift;
@@ -14,12 +14,11 @@ sub new {
   my $this = bless(
     $class->SUPER::new(
       $session,
-      name => 'Angular-Mocks',
+      name => 'ngMocks',
       version => '1.3.0-rc.0',
       author => 'Brat Tech LLC, Google and community',
       homepage => 'https://angularjs.org',
       javascript => ['angular-mocks.js', ],
-      puburl => '%PUBURLPATH%/%SYSTEMWEB%/AngularPlugin',
       dependencies => ['angular'],
     ),
     $class

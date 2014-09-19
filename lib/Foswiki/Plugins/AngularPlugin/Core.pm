@@ -4,17 +4,34 @@ package Foswiki::Plugins::AngularPlugin::Core;
 use strict;
 use warnings;
 
-use Foswiki::Plugins::JQueryPlugin::Plugin ();
-our @ISA = qw( Foswiki::Plugins::JQueryPlugin::Plugin );
+use Foswiki::Plugins::JQueryPlugin ();
+
+=begin TML
+
+---+ package Foswiki::Plugins::AngularPlugin::Core
+
+This is the perl stub for the angular core. 
+
+=cut
+
+=begin TML
+
+---++ ClassMethod new( $class, ... )
+
+Constructor
+
+=cut
+
+use Foswiki::Plugins::AngularPlugin::Module ();
+our @ISA = qw( Foswiki::Plugins::AngularPlugin::Module );
+
 
 sub new {
   my $class = shift;
-  my $session = shift || $Foswiki::Plugins::SESSION;
 
   my $this = bless(
     $class->SUPER::new(
-      $session,
-      name => 'Angular',
+      name => 'Core',
       version => '1.3.0-rc.0',
       author => 'Brat Tech LLC, Google and community',
       homepage => 'https://angularjs.org',
@@ -26,6 +43,89 @@ sub new {
 
   return $this;
 }
+
+=begin TML
+
+---++ ClassMethod init( $this )
+
+Initialize this plugin by adding the required static files to the page 
+
+=cut
+
+sub init {
+    my $this = shift;
+
+    return unless $this->SUPER::init();
+
+    # open matching localization file if it exists
+    my $session = $Foswiki::Plugins::SESSION;
+    my $langTag = $session->i18n->language();
+    my $messagePath =
+        $Foswiki::cfg{SystemWebName}
+      . '/AngularPlugin/i18n/angular-locale_'
+      . $langTag . '.js';
+
+    my $messageFile = $Foswiki::cfg{PubDir} . '/' . $messagePath;
+    if ( -f $messageFile ) {
+        Foswiki::Func::addToZone(
+            'script', $this->{idPrefix}.'::I18N',
+            <<"HERE", $this->{idPrefix}.'::CORE' );
+<script type='text/javascript' src='$Foswiki::cfg{PubUrlPath}/$messagePath'></script>
+HERE
+    }
+}
+
+=begin TML
+
+---++ ClassMethod handleNGAPP( $this, $params, $topic, $web ) -> $result
+
+Tag handler for =%<nop>NGAPP%=. 
+
+=cut
+
+sub handleNGAPP {
+  my ( $this, $params, $topic, $web ) = @_;
+
+  my %ngParams = ();
+
+  $ngParams{'ng-app'} = $params->{_DEFAULT} || '';
+  $ngParams{'ng-controller'} = $params->{controller} if defined $params->{controller};
+  $ngParams{'ng-init'} = $params->{init} if defined $params->{init};
+
+  my $modules = '';
+  if (defined $params->{modules}) {
+    my @modules = ();
+    foreach my $module (split(/\s*,\s*/, $params->{modules})) {
+      push @modules, $module;
+      Foswiki::Plugins::JQueryPlugin::createPlugin($module);
+    }
+    $modules = "'".join("', '", @modules)."'";
+  }
+
+  my $appScript = '';
+  if ($ngParams{'ng-app'}) {
+    $appScript = <<"HERE"
+<script>
+var $ngParams{'ng-app'} = angular.module('$ngParams{'ng-app'}', [$modules]);
+</script>
+HERE
+  }
+
+  return $appScript ."<div class='angularApp' " . join(" ", map { $_ . ($ngParams{$_} eq '' ? '' : '="' . $ngParams{$_} . '"') } keys %ngParams) . ">";
+}
+
+=begin TML
+
+---++ ClassMethod handleEndNgApp ( $this, $params, $topic, $web ) -> $result
+
+Tag handler for =%<nop>ENDNGAPP%=. 
+
+=cut
+
+sub handleENDNGAPP {
+    return "</div><!-- //NGAPP -->";
+}
+
 
 1;
 

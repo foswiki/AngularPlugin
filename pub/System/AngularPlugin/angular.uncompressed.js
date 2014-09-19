@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-rc.2
+ * @license AngularJS v1.3.0-local+sha.d1434c9
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-rc.2/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-local+sha.d1434c9/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,11 +2122,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-rc.2',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-local+sha.d1434c9',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
-  codeName: 'tactile-perception'
+  codeName: 'snapshot'
 };
 
 
@@ -21301,6 +21301,7 @@ var ngCloakDirective = ngDirective({
  *
  * @element ANY
  * @scope
+ * @priority 500
  * @param {expression} ngController Name of a constructor function registered with the current
  * {@link ng.$controllerProvider $controllerProvider} or an {@link guide/expression expression}
  * that on the current scope evaluates to a constructor function.
