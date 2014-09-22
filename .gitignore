@@ -8,7 +8,7 @@ AngularPlugin.zip
 AngularPlugin_installer
 AngularPlugin_installer.pl
 pub/System/AngularPlugin/angular.js
-pub/System/AngularPlugin/vendor
+pub/System/AngularPlugin/vendor/*/
 pub/System/AngularPlugin/modules/ngAnimate/angular-animate.js
 pub/System/AngularPlugin/modules/ngAria/angular-aria.js
 pub/System/AngularPlugin/modules/ngCookies/angular-cookies.js
@@ -22,6 +22,7 @@ pub/System/AngularPlugin/modules/ngScenario/angular-scenario.js
 pub/System/AngularPlugin/modules/ngTouch/angular-touch.js
 pub/System/AngularPlugin/modules/ui.knob/angular-knob.js
 pub/System/AngularPlugin/modules/ui.knob/jquery-knob.js
+pub/System/AngularPlugin/modules/ui.slider/slider.js
 pub/System/AngularPlugin/i18n/angular-locale_aa-dj.js
 pub/System/AngularPlugin/i18n/angular-locale_aa-er.js
 pub/System/AngularPlugin/i18n/angular-locale_aa-et.js
