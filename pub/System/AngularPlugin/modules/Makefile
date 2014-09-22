@@ -1,6 +1,7 @@
 FOSWIKI_ROOT?=~/foswiki/core
 SUBDIRS=\
   ui.knob \
+  ui.slider \
   ngAnimate \
   ngAria \
   ngCookies \

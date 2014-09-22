@@ -4,7 +4,7 @@ TARGET=angular-route.js
 -include $(FOSWIKI_ROOT)/pub/System/JQueryPlugin/Makefile.include
 
 angular-animate.uncompressed.js: ../../vendor/angular.js/build/angular-route.js
-	@echo getting $@ from git
+	@echo getting $@ from vendor
 	@cp $< $@
 
 
