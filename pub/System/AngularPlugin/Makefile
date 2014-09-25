@@ -1,5 +1,6 @@
 FOSWIKI_ROOT?=~/foswiki/core
-SUBDIRS=modules i18n vendor
+SUBDIRS=modules i18n
+#vendor
 TARGET=angular.js 
 
 -include $(FOSWIKI_ROOT)/pub/System/JQueryPlugin/Makefile.include

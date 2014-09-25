@@ -9,11 +9,9 @@ our @ISA = qw( Foswiki::Plugins::AngularPlugin::Module );
 
 sub new {
   my $class = shift;
-  my $session = shift || $Foswiki::Plugins::SESSION;
 
   my $this = bless(
     $class->SUPER::new(
-      $session,
       name => 'ngTouch',
       version => '1.3.0-rc.0',
       author => 'Brat Tech LLC, Google and community',
