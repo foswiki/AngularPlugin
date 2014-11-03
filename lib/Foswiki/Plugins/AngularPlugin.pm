@@ -28,12 +28,16 @@ Container for Angular.JS and modules
 
 
 use Foswiki::Func ();
+use Foswiki::Meta ();
+use Foswiki::Plugins ();
 use Foswiki::Plugins::JQueryPlugin();
+use Foswiki::Contrib::JsonRpcContrib ();
 
 our $VERSION = '0.00_001';
 our $RELEASE = '0.00_001';
 our $SHORTDESCRIPTION = 'A framework assisting with creating single-page applications';
 our $NO_PREFS_IN_TOPIC = 1;
+our $service;
 
 =begin TML
 
@@ -43,22 +47,92 @@ our $NO_PREFS_IN_TOPIC = 1;
 
 sub initPlugin {
 
+  my $request = Foswiki::Func::getRequestObject();
+  my $context = Foswiki::Func::getContext();
+  my $session = $Foswiki::Plugins::SESSION;
+
+  # special treatment of view context
+  if ($context->{view} || $context->{angular}) {
+    my $angular = $request->param("angular");
+    my $skin = $request->param('skin');
+
+    # evaluate angular url param
+    if (defined $angular) {
+      $angular = Foswiki::Func::isTrue($angular);
+
+      # set or clear session value based on "angular" url param
+      if ($angular) {
+        Foswiki::Func::setSessionValue("angular", 1);
+      } else {
+        Foswiki::Func::clearSessionValue("angular");
+      }
+    } 
+
+    # without an "angular" url param evaluate session param and decide whether or not to switch into angular mode
+    else {
+      $angular = Foswiki::Func::getSessionValue("angular");
+    }
+
+    # redirect to angular mode 
+    if (!$context->{angular} && $angular && !defined($skin)) {
+      my $url = Foswiki::Func::getScriptUrl($session->{webName}, $session->{topicName}, 'angular');
+      #print STDERR "redirecting $session->{webName}.$session->{topicName} to angular ... $url\n";
+      Foswiki::Func::redirectCgiQuery(undef, $url);
+      return 1;
+    }
+
+    # enter angular mode 
+    if ($angular) {
+      $context->{angular} = 1;
+      
+      # set skin path and switch to a neutral place internally unless there's a "skin" url param
+      unless (defined $skin) {
+        my $web = $Foswiki::cfg{UsersWebName};
+        my $topic = "SitePreferences";
+        my $skin = getSkin();
+
+        Foswiki::Func::pushTopicContext($web, $topic);
+        Foswiki::Func::setPreferencesValue("SKIN", getSkin());
+      }
+    }
+  }
+
   # get all modules
   foreach my $moduleName (sort keys %{$Foswiki::cfg{AngularPlugin}{Modules}}) {
     registerModule($moduleName)
       if $Foswiki::cfg{AngularPlugin}{Modules}{$moduleName}{Enabled};
   }
 
+  # register jsonrpc methods
+  Foswiki::Contrib::JsonRpcContrib::registerMethod("AngularPlugin", "tmpl", 
+    sub {
+      my $session = shift;
+      return service()->tmpl(@_);
+    }
+  );
+
   # macros
   Foswiki::Func::registerTagHandler( 'NGAPP', sub {
-    return handleMacro("Core", "NGAPP", @_);
+    return handleMacro("ngCore", "NGAPP", @_);
   });
   Foswiki::Func::registerTagHandler( 'ENDNGAPP', sub {
-    return handleMacro("Core", "ENDNGAPP", @_);
+    return handleMacro("ngCore", "ENDNGAPP", @_);
   });
 
   return 1;
 }
+
+=begin TML
+
+---++ finishPlugin
+
+undo manipulation of view url path
+
+=cut
+
+sub finishPlugin {
+}
+
 
 =begin TML
 
@@ -71,7 +145,7 @@ sub handleMacro {
   my $macroName = shift;
   my $session = shift;
 
-  my $module = getModule("Core", $session);
+  my $module = getModule($moduleName, $session);
   return _inlineError("ERROR: can't load $moduleName") unless defined $module;
 
   my $handler = 'handle'.$macroName;
@@ -129,5 +203,84 @@ sub _inlineError {
     return "<div class='foswikiAlert'>$msg</div>";
 }
 
+=begin TML
+
+---++ service() -> $service
+
+returns the service handler or JSON-RPC 
+
+=cut
+
+sub service {
+
+  unless (defined $service) {
+    require Foswiki::Plugins::AngularPlugin::Service;
+    $service = Foswiki::Plugins::AngularPlugin::Service->new();
+  }
+
+  return $service;
+}
+
+=begin TML
+
+---++ dispatch($session) 
+
+entry point to an angularized Foswiki
+
+=cut
+
+sub dispatch {
+  my $session = shift;
+
+  Foswiki::Func::writeEvent("angular");
+
+  # flag this session to run in angular mode
+  Foswiki::Func::setSessionValue("angular", 1);
+
+  my $tmplData = Foswiki::Func::readTemplate('angular');
+
+  $tmplData = Foswiki::Func::expandCommonVariables($tmplData);
+  $tmplData = Foswiki::Func::renderText($tmplData);
+
+  $session->writeCompletePage($tmplData);
+}
+
+sub getSkin {
+
+  my $skin = Foswiki::Func::getPreferencesValue("SKIN");
+
+  unless ($skin =~ /\bangular\b/) {
+    my @skinPath = split(/\s*,\s*/, $skin);
+    my $baseSkin = $skinPath[-1];
+    unshift @skinPath, "angular";
+    unshift @skinPath, "angular.".$baseSkin;
+    $skin = join(", ", @skinPath);
+  }
+
+  return $skin;
+}
+
+=begin TML
+
+---++ completePageHandler
+
+=cut
+
+sub completePageHandler {
+  #my $text = $_[0];
+
+  if (Foswiki::Func::getContext()->{angular}) {
+
+    #print STDERR "angular mode ... rewriting urls\n";
+
+    my $scriptUrl = Foswiki::Func::getScriptUrl(undef, undef, 'view');
+    my $scriptUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'view');
+    my $angularUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'angular') . '/view';
+
+    $_[0] =~ s/(<a[^>]*href=["'])(?:$scriptUrl|$scriptUrlPath)\/([A-Z_])/$1$angularUrlPath\/$2/g
+  } else {
+    #print STDERR "NO angular mode\n";
+  }
+}
 
 1;

@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="micha" comment="reprev" date="1409913098" format="1.1" reprev="2" version="2"}%
+%META:TOPICINFO{author="micha" comment="reprev" date="1414482295" format="1.1" reprev="2" version="3"}%
 ---+!! %TOPIC%
 %SHORTDESCRIPTION%
 
@@ -28,6 +28,11 @@ cake. The best of all: it makes development fun!
 ---++ Installation Instructions
 
 %$INSTALL_INSTRUCTIONS%
+
+%IF{"context angular"
+   then="<a href='%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%?angular=0'>Angular Off</a>"
+   else="<a href='%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%?angular=1'>Angular On</a>"
+}%
 
 ---++ Info
 <!--

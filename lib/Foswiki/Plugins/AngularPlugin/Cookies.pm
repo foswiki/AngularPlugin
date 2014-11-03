@@ -13,11 +13,11 @@ sub new {
   my $this = bless(
     $class->SUPER::new(
       name => 'ngCookies',
-      version => '1.3.0-rc.0',
+      version => '1.3.2',
       author => 'Brat Tech LLC, Google and community',
       homepage => 'https://angularjs.org',
       javascript => ['angular-cookies.js', ],
-      dependencies => ['angular'],
+      dependencies => ['ngCore'],
     ),
     $class
   );

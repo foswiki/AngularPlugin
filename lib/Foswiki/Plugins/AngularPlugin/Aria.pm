@@ -1,6 +1,6 @@
 # See bottom of file for license and copyright information
 
-package Foswiki::Plugins::AngularPlugin::Route;
+package Foswiki::Plugins::AngularPlugin::Aria;
 use strict;
 use warnings;
 
@@ -12,11 +12,11 @@ sub new {
 
   my $this = bless(
     $class->SUPER::new(
-      name => 'ngRoute',
+      name => 'ngAria',
       version => '1.3.2',
       author => 'Brat Tech LLC, Google and community',
       homepage => 'https://angularjs.org',
-      javascript => ['angular-route.js', ],
+      javascript => ['angular-aria.js', ],
       dependencies => ['ngCore'],
     ),
     $class
@@ -43,5 +43,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 As per the GPL, removal of this notice is prohibited.
+
+
 
 

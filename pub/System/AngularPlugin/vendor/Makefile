@@ -1,16 +1,20 @@
-.PHONY: init.angular.js init.ui-slider
+REPOS=angular.js ui-slider ngFx angular-loading-bar
 
-all: angular.js ui-slider
+.PHONY: $(REPOS)
 
-init.angular.js:
-	@test -d angular.js || git clone git@github.com:angular/angular.js.git
+all: $(REPOS)
 
-angular.js: init.angular.js
-	cd angular.js && git pull && grunt buildall
+angular.js: 
+	test -d $@ || git clone git@github.com:angular/angular.js.git
+	cd $@ && git pull && grunt buildall
 
-init.ui-slider:
-	@test -d ui-slider || git clone git@github.com:angular-ui/ui-slider.git 
+ui-slider: 
+	test -d $@ || git clone git@github.com:angular-ui/ui-slider.git 
+	cd $@ && git pull 
 
-ui-slider: init.ui-slider
-	cd ui-slider && git pull 
+ngFx: 
+	test -d ngFx || git clone git@github.com:Hendrixer/ngFx.git
+	cd $@ && git pull && bower install
 
+angular-loading-bar:
+	bower install $@

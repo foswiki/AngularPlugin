@@ -17,7 +17,7 @@ sub new {
       author => 'Michael Daum',
       homepage => 'https://foswiki.org/Extensions/AngularPlugin',
       javascript => ['slider.js'],
-      dependencies => ['ANGULARPLUGIN::CORE', 'ui'],
+      dependencies => ['ngCore', 'ui'],
     ),
     $class
   );

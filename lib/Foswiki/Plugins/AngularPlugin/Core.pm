@@ -31,8 +31,8 @@ sub new {
 
   my $this = bless(
     $class->SUPER::new(
-      name => 'Core',
-      version => '1.3.0-rc.0',
+      name => 'ngCore',
+      version => '1.3.2',
       author => 'Brat Tech LLC, Google and community',
       homepage => 'https://angularjs.org',
       javascript => ['angular.js', ],
@@ -69,8 +69,8 @@ sub init {
     if ( -f $messageFile ) {
         Foswiki::Func::addToZone(
             'script', $this->{idPrefix}.'::I18N',
-            <<"HERE", $this->{idPrefix}.'::CORE' );
-<script type='text/javascript' src='$Foswiki::cfg{PubUrlPath}/$messagePath'></script>
+            <<"HERE", $this->{idPrefix}.'::NGCORE' );
+<script id='\$id' type='text/javascript' src='$Foswiki::cfg{PubUrlPath}/$messagePath'></script>
 HERE
     }
 }

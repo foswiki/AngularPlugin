@@ -1,5 +1,6 @@
 FOSWIKI_ROOT?=~/foswiki/core
 SUBDIRS=\
+  loadingBar \
   ui.knob \
   ui.slider \
   ngAnimate \
@@ -13,6 +14,7 @@ SUBDIRS=\
   ngSanitize \
   ngScenario \
   ngTouch \
+  ngFx
 
 
 -include $(FOSWIKI_ROOT)/pub/System/JQueryPlugin/Makefile.include

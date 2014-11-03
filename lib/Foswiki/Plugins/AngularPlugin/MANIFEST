@@ -1,9 +1,13 @@
 data/System/AngularPlugin.txt 0644
+lib/Foswiki/Plugins/AngularPlugin/Animate.pm 0644
+lib/Foswiki/Plugins/AngularPlugin/Aria.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Config.spec 0644
 lib/Foswiki/Plugins/AngularPlugin/Cookies.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Core.pm 0644
+lib/Foswiki/Plugins/AngularPlugin/Fx.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Knob.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Loader.pm 0644
+lib/Foswiki/Plugins/AngularPlugin/LoadingBar.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Messages.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Mocks.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Module.pm 0644
@@ -12,6 +16,8 @@ lib/Foswiki/Plugins/AngularPlugin/Resource.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Route.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Sanitize.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Scenario.pm 0644
+lib/Foswiki/Plugins/AngularPlugin/Service.pm 0644
+lib/Foswiki/Plugins/AngularPlugin/Slider.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Touch.pm 0644
 pub/System/AngularPlugin/angular.js 0644
 pub/System/AngularPlugin/angular.js.gz 0644
@@ -2203,6 +2209,13 @@ pub/System/AngularPlugin/i18n/angular-locale_zu-za.uncompressed.js 0644
 pub/System/AngularPlugin/i18n/Makefile 0644
 pub/System/AngularPlugin/logo.png 0644
 pub/System/AngularPlugin/Makefile 0644
+pub/System/AngularPlugin/modules/loadingBar/loading-bar.css 0644
+pub/System/AngularPlugin/modules/loadingBar/loading-bar.css.gz 0644
+pub/System/AngularPlugin/modules/loadingBar/loading-bar.js 0644
+pub/System/AngularPlugin/modules/loadingBar/loading-bar.js.gz 0644
+pub/System/AngularPlugin/modules/loadingBar/loading-bar.uncompressed.css 0644
+pub/System/AngularPlugin/modules/loadingBar/loading-bar.uncompressed.js 0644
+pub/System/AngularPlugin/modules/loadingBar/Makefile 0644
 pub/System/AngularPlugin/modules/Makefile 0644
 pub/System/AngularPlugin/modules/ngAnimate/angular-animate.js 0644
 pub/System/AngularPlugin/modules/ngAnimate/angular-animate.js.gz 0644
@@ -2216,6 +2229,10 @@ pub/System/AngularPlugin/modules/ngCookies/angular-cookies.js 0644
 pub/System/AngularPlugin/modules/ngCookies/angular-cookies.js.gz 0644
 pub/System/AngularPlugin/modules/ngCookies/angular-cookies.uncompressed.js 0644
 pub/System/AngularPlugin/modules/ngCookies/Makefile 0644
+pub/System/AngularPlugin/modules/ngFx/Makefile 0644
+pub/System/AngularPlugin/modules/ngFx/ngFx.js 0644
+pub/System/AngularPlugin/modules/ngFx/ngFx.js.gz 0644
+pub/System/AngularPlugin/modules/ngFx/ngFx.uncompressed.js 0644
 pub/System/AngularPlugin/modules/ngLoader/angular-loader.js 0644
 pub/System/AngularPlugin/modules/ngLoader/angular-loader.js.gz 0644
 pub/System/AngularPlugin/modules/ngLoader/angular-loader.uncompressed.js 0644
@@ -2255,3 +2272,8 @@ pub/System/AngularPlugin/modules/ui.knob/jquery-knob.js 0644
 pub/System/AngularPlugin/modules/ui.knob/jquery-knob.js.gz 0644
 pub/System/AngularPlugin/modules/ui.knob/jquery-knob.uncompressed.js 0644
 pub/System/AngularPlugin/modules/ui.knob/Makefile 0644
+pub/System/AngularPlugin/modules/ui.slider/Makefile 0644
+pub/System/AngularPlugin/modules/ui.slider/mini.slider.uncompressed.js 0644
+pub/System/AngularPlugin/modules/ui.slider/slider.js 0644
+pub/System/AngularPlugin/modules/ui.slider/slider.js.gz 0644
+pub/System/AngularPlugin/modules/ui.slider/slider.uncompressed.js 0644

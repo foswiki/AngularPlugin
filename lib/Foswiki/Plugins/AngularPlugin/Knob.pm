@@ -17,7 +17,7 @@ sub new {
       author => 'Anthony Terrien',
       homepage => 'https://github.com/aterrien/jQuery-Knob',
       javascript => ['jquery-knob.js', 'angular-knob.js'],
-      dependencies => ['ANGULARPLUGIN::CORE', 'ui'],
+      dependencies => ['ngCore', 'ui'],
     ),
     $class
   );

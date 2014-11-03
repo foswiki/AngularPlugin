@@ -1,6 +1,6 @@
 # See bottom of file for license and copyright information
 
-package Foswiki::Plugins::AngularPlugin::Route;
+package Foswiki::Plugins::AngularPlugin::Fx;
 use strict;
 use warnings;
 
@@ -12,12 +12,12 @@ sub new {
 
   my $this = bless(
     $class->SUPER::new(
-      name => 'ngRoute',
-      version => '1.3.2',
-      author => 'Brat Tech LLC, Google and community',
-      homepage => 'https://angularjs.org',
-      javascript => ['angular-route.js', ],
-      dependencies => ['ngCore'],
+      name => 'ngFx',
+      version => '1.11.8',
+      author => 'Scott Moss',
+      homepage => 'https://hendrixer.github.io',
+      javascript => ['ngFx.js', ],
+      dependencies => ['ngCore', 'ngAnimate'],
     ),
     $class
   );
@@ -43,5 +43,6 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 As per the GPL, removal of this notice is prohibited.
+
 
 
