@@ -1,3 +1,4 @@
+bin/angular 0755
 data/System/AngularPlugin.txt 0644
 lib/Foswiki/Plugins/AngularPlugin/Animate.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Aria.pm 0644

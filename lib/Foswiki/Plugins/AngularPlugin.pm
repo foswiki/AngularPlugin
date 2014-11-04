@@ -41,11 +41,11 @@ our $service;
 
 =begin TML
 
----++ initPlugin($topic, $web, $user) -> $boolean
+---++ earlyInit()
 
 =cut
 
-sub initPlugin {
+sub earlyInitPlugin {
 
   my $request = Foswiki::Func::getRequestObject();
   my $context = Foswiki::Func::getContext();
@@ -75,26 +75,42 @@ sub initPlugin {
 
     # redirect to angular mode 
     if (!$context->{angular} && $angular && !defined($skin)) {
-      my $url = Foswiki::Func::getScriptUrl($session->{webName}, $session->{topicName}, 'angular');
+      my $url = Foswiki::Func::getScriptUrl(undef, undef, 'angular')."/view/$session->{webName}/$session->{topicName}";
       #print STDERR "redirecting $session->{webName}.$session->{topicName} to angular ... $url\n";
-      Foswiki::Func::redirectCgiQuery(undef, $url);
-      return 1;
+      Foswiki::Func::redirectCgiQuery(undef, $url, 1);
+      return;
     }
 
     # enter angular mode 
     if ($angular) {
       $context->{angular} = 1;
       
-      # set skin path and switch to a neutral place internally unless there's a "skin" url param
+      # switch to a neutral place internally unless there's a "skin" url param
       unless (defined $skin) {
         my $web = $Foswiki::cfg{UsersWebName};
         my $topic = "SitePreferences";
-        my $skin = getSkin();
 
         Foswiki::Func::pushTopicContext($web, $topic);
-        Foswiki::Func::setPreferencesValue("SKIN", getSkin());
+
       }
     }
+  }
+
+  return;
+}
+
+=begin TML
+
+---++ initPlugin($topic, $web, $user) -> $boolean
+
+=cut
+
+sub initPlugin {
+
+  if (Foswiki::Func::getContext()->{angular}) {
+    my $skin = getSkin();
+    #print STDERR "skin=$skin\n";
+    Foswiki::Func::setPreferencesValue("SKIN", $skin);
   }
 
   # get all modules

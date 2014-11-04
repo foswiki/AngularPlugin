@@ -20,7 +20,7 @@ $Foswiki::cfg{JQueryPlugin}{Plugins}{ngAria}{Enabled} = 1;
 # **STRING**
 $Foswiki::cfg{JQueryPlugin}{Plugins}{ngCookies}{Module} = 'Foswiki::Plugins::AngularPlugin::Cookies';
 # **BOOLEAN**
-$Foswiki::cfg{JQueryPlugin}{Plugins}{ngCookues}{Enabled} = 1;
+$Foswiki::cfg{JQueryPlugin}{Plugins}{ngCookies}{Enabled} = 1;
 
 # **STRING**
 $Foswiki::cfg{JQueryPlugin}{Plugins}{ngLoader}{Module} = 'Foswiki::Plugins::AngularPlugin::Loader';

@@ -34,6 +34,9 @@ sub tmpl {
 
   my $context = $request->param('context') || 'view';
   Foswiki::Func::getContext()->{$context} = 1;
+  if ($context eq "view") {
+    $session->{request}->action("view");
+  }
 
   throw Foswiki::Contrib::JsonRpcContrib::Error(404, "Topic does not exist")
     unless Foswiki::Func::topicExists($web, $topic);
