@@ -1,5 +1,6 @@
 FOSWIKI_ROOT?=~/foswiki/core
 SUBDIRS=\
+  ngLocalize \
   loadingBar \
   ui.knob \
   ui.slider \

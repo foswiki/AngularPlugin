@@ -50,6 +50,12 @@ sub earlyInitPlugin {
   my $request = Foswiki::Func::getRequestObject();
   my $context = Foswiki::Func::getContext();
   my $session = $Foswiki::Plugins::SESSION;
+  my $web = $session->{webName};
+  my $topic = $session->{topicName};
+
+  #my $url = $session->{request}->url();
+  #$url =~ s/POSTDATA.*$/.../;
+  #print STDERR "early init $web.$topic ... url=$url\n";
 
   # special treatment of view context
   if ($context->{view} || $context->{angular}) {
@@ -73,16 +79,29 @@ sub earlyInitPlugin {
       $angular = Foswiki::Func::getSessionValue("angular");
     }
 
-    # redirect to angular mode 
-    if (!$context->{angular} && $angular && !defined($skin)) {
-      my $url = Foswiki::Func::getScriptUrl(undef, undef, 'angular')."/view/$session->{webName}/$session->{topicName}";
-      #print STDERR "redirecting $session->{webName}.$session->{topicName} to angular ... $url\n";
-      Foswiki::Func::redirectCgiQuery(undef, $url, 1);
-      return;
-    }
-
-    # enter angular mode 
     if ($angular) {
+      if (_isExcluded($web, $topic)) {
+
+        if ($context->{angular}) {
+
+          # redirect to normal mode 
+          my $url = Foswiki::Func::getScriptUrl($web, $topic, 'view');
+          #print STDERR "redirecting $web.$topic to normal ... $url\n";
+          Foswiki::Func::redirectCgiQuery(undef, $url, 1);
+        } 
+
+        return;
+      }
+
+      # redirect to angular mode 
+      if (!$context->{angular} && !defined($skin)) {
+        my $url = Foswiki::Func::getScriptUrl($web, $topic, 'angular');
+        #print STDERR "redirecting $web.$topic to angular ... $url\n";
+        Foswiki::Func::redirectCgiQuery(undef, $url, 1);
+        return;
+      }
+
+      # enter angular mode 
       $context->{angular} = 1;
       
       # switch to a neutral place internally unless there's a "skin" url param
@@ -90,6 +109,7 @@ sub earlyInitPlugin {
         my $web = $Foswiki::cfg{UsersWebName};
         my $topic = "SitePreferences";
 
+        #print STDERR "push context $web.$topic\n";
         Foswiki::Func::pushTopicContext($web, $topic);
 
       }
@@ -99,6 +119,13 @@ sub earlyInitPlugin {
   return;
 }
 
+sub _isExcluded {
+  my ($web, $topic) = @_;
+
+  my $excludePattern = $Foswiki::cfg{AngularPlugin}{Exclude};
+  return (defined($excludePattern) && "$web.$topic" =~ /$excludePattern/)?1:0;
+}
+
 =begin TML
 
 ---++ initPlugin($topic, $web, $user) -> $boolean
@@ -106,11 +133,17 @@ sub earlyInitPlugin {
 =cut
 
 sub initPlugin {
+  my ($topic, $web) = @_;
 
-  if (Foswiki::Func::getContext()->{angular}) {
-    my $skin = getSkin();
-    #print STDERR "skin=$skin\n";
-    Foswiki::Func::setPreferencesValue("SKIN", $skin);
+  if (_isExcluded($web, $topic)) {
+    #print STDERR "$web.$topic excluded from angular mode\n";
+  } else {
+    if (Foswiki::Func::getContext()->{angular}) {
+      #print STDERR "$web.$topic enters angular mode\n";
+      my $skin = getSkin();
+      #print STDERR "skin=$skin\n";
+      Foswiki::Func::setPreferencesValue("SKIN", $skin);
+    }
   }
 
   # get all modules
@@ -289,14 +322,24 @@ sub completePageHandler {
 
     #print STDERR "angular mode ... rewriting urls\n";
 
-    my $scriptUrl = Foswiki::Func::getScriptUrl(undef, undef, 'view');
-    my $scriptUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'view');
-    my $angularUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'angular') . '/view';
+    my $viewUrl = Foswiki::Func::getScriptUrl(undef, undef, 'view');
+    my $viewUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'view');
+    my $angularUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'angular');
+    my $webRegex = $Foswiki::regex{'webNameRegex'};
+    my $topicRegex = $Foswiki::regex{'topicNameRegex'};
 
-    $_[0] =~ s/(<a[^>]*href=["'])(?:$scriptUrl|$scriptUrlPath)\/([A-Z_])/$1$angularUrlPath\/$2/g
+    $_[0] =~ s/(<a[^>]*href=["'])($viewUrl|$viewUrlPath)\/($webRegex)\/($topicRegex)(.*?["'])/$1._processUrl($2, $angularUrlPath, $3, $4).$5/ge;
   } else {
     #print STDERR "NO angular mode\n";
   }
 }
+
+sub _processUrl {
+  my ($view, $angular, $web, $topic) = @_;
+
+  return (_isExcluded($web, $topic)?$view:$angular).'/'.$web.'/'.$topic; 
+}
+
+
 
 1;

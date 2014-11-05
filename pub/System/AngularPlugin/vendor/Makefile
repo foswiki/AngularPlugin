@@ -1,4 +1,4 @@
-REPOS=angular.js ui-slider ngFx angular-loading-bar
+REPOS=angular.js ui-slider ngFx angular-loading-bar angular-localization
 
 .PHONY: $(REPOS)
 
@@ -17,4 +17,7 @@ ngFx:
 	cd $@ && git pull && bower install
 
 angular-loading-bar:
+	bower install $@
+
+angular-localization:
 	bower install $@

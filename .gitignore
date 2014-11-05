@@ -13,6 +13,7 @@ pub/System/AngularPlugin/modules/ngAnimate/angular-animate.js
 pub/System/AngularPlugin/modules/ngAria/angular-aria.js
 pub/System/AngularPlugin/modules/ngCookies/angular-cookies.js
 pub/System/AngularPlugin/modules/ngLoader/angular-loader.js
+pub/System/AngularPlugin/modules/ngLocalize/angular-localization.js
 pub/System/AngularPlugin/modules/ngMessages/angular-messages.js
 pub/System/AngularPlugin/modules/ngMocks/angular-mocks.js
 pub/System/AngularPlugin/modules/ngResource/angular-resource.js

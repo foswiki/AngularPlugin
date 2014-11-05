@@ -1,2 +1,2 @@
 Foswiki::Plugins::JQueryPlugin,>=6.00,perl,Required.
-AutoTemplatePlugin,>=3.0,perl,Required.
+Foswiki::Plugins::AutoTemplatePlugin,>=3.0,perl,Required.

@@ -23,6 +23,11 @@ $Foswiki::cfg{JQueryPlugin}{Plugins}{ngCookies}{Module} = 'Foswiki::Plugins::Ang
 $Foswiki::cfg{JQueryPlugin}{Plugins}{ngCookies}{Enabled} = 1;
 
 # **STRING**
+$Foswiki::cfg{JQueryPlugin}{Plugins}{ngLocalize}{Module} = 'Foswiki::Plugins::AngularPlugin::Localize';
+# **BOOLEAN**
+$Foswiki::cfg{JQueryPlugin}{Plugins}{ngLocalize}{Enabled} = 1;
+
+# **STRING**
 $Foswiki::cfg{JQueryPlugin}{Plugins}{ngLoader}{Module} = 'Foswiki::Plugins::AngularPlugin::Loader';
 # **BOOLEAN**
 $Foswiki::cfg{JQueryPlugin}{Plugins}{ngLoader}{Enabled} = 1;
@@ -85,6 +90,15 @@ $Foswiki::cfg{AngularPlugin}{Modules}{"ui.slider"}{Enabled} = 1;
 
 # **BOOLEAN**
 $Foswiki::cfg{AngularPlugin}{Html5Mode} = 1;
+
+# **STRING**
+# Regular expression to be matched against a web.topic. Foswiki can be switched into "angular" mode. However
+# those topics that match this regular expression will be rendered in "normal" mode. For example SolrPlugin
+# currently conflicts with AngularPlugin using different means to create the single-page search application.
+# For those cases it makes sense to exclude topics such as WebSearch, WebChanges, SiteSearch, SolrSearch etc
+# from "angular" mode and let SolrPlugin take over control of parsing the URL. See also topics that have a solr
+# view template in {ViewTemplateRules}.
+$Foswiki::cfg{AngularPlugin}{Exclude} = 'SolrSearch';
 
 # **PERL**
 $Foswiki::cfg{SwitchBoard}{angular} = {

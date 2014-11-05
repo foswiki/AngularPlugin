@@ -52,7 +52,7 @@ Initialize this plugin by adding the required static files to the page
 
 =cut
 
-sub init {
+sub DIS_init {
     my $this = shift;
 
     return unless $this->SUPER::init();

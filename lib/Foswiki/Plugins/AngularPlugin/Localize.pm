@@ -1,6 +1,6 @@
 # See bottom of file for license and copyright information
 
-package Foswiki::Plugins::AngularPlugin::LoadingBar;
+package Foswiki::Plugins::AngularPlugin::Localize;
 use strict;
 use warnings;
 
@@ -12,13 +12,12 @@ sub new {
 
   my $this = bless(
     $class->SUPER::new(
-      name => 'loadingBar',
-      version => '0.6.0',
-      author => 'Wes Cruver',
-      homepage => 'https://github.com/chieffancypants/angular-loading-bar',
-      css => ['loading-bar.css', ],
-      javascript => ['loading-bar.js', ],
-      dependencies => ['ngCore', 'ANGULARPLUGIN::NGANIMATE'],
+      name => 'ngLocalize',
+      version => '1.1.3',
+      author => 'Rahul Doshi',
+      homepage => 'https://github.com/doshprompt/angular-localization',
+      javascript => ['angular-localization.js', ],
+      dependencies => ['ngCore', 'ngCookies'],
     ),
     $class
   );
