@@ -99,12 +99,3 @@ $Foswiki::cfg{AngularPlugin}{Html5Mode} = 1;
 # from "angular" mode and let SolrPlugin take over control of parsing the URL. See also topics that have a solr
 # view template in {ViewTemplateRules}.
 $Foswiki::cfg{AngularPlugin}{Exclude} = 'SolrSearch';
-
-# **PERL**
-$Foswiki::cfg{SwitchBoard}{angular} = {
-    package  => 'Foswiki::Plugins::AngularPlugin',
-    function => 'dispatch',
-    context  => {
-        angular => 1
-    }
-};

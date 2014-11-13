@@ -52,67 +52,19 @@ sub earlyInitPlugin {
   my $session = $Foswiki::Plugins::SESSION;
   my $web = $session->{webName};
   my $topic = $session->{topicName};
+  my $angular = $request->param("angular");
 
-  #my $url = $session->{request}->url();
-  #$url =~ s/POSTDATA.*$/.../;
-  #print STDERR "early init $web.$topic ... url=$url\n";
-
-  # special treatment of view context
-  if ($context->{view} || $context->{angular}) {
-    my $angular = $request->param("angular");
-    my $skin = $request->param('skin');
-
-    # evaluate angular url param
-    if (defined $angular) {
-      $angular = Foswiki::Func::isTrue($angular);
-
-      # set or clear session value based on "angular" url param
-      if ($angular) {
-        Foswiki::Func::setSessionValue("angular", 1);
-      } else {
-        Foswiki::Func::clearSessionValue("angular");
-      }
-    } 
-
-    # without an "angular" url param evaluate session param and decide whether or not to switch into angular mode
-    else {
-      $angular = Foswiki::Func::getSessionValue("angular");
-    }
-
-    if ($angular) {
-      if (_isExcluded($web, $topic)) {
-
-        if ($context->{angular}) {
-
-          # redirect to normal mode 
-          my $url = Foswiki::Func::getScriptUrl($web, $topic, 'view');
-          #print STDERR "redirecting $web.$topic to normal ... $url\n";
-          Foswiki::Func::redirectCgiQuery(undef, $url, 1);
-        } 
-
-        return;
-      }
-
-      # redirect to angular mode 
-      if (!$context->{angular} && !defined($skin)) {
-        my $url = Foswiki::Func::getScriptUrl($web, $topic, 'angular');
-        #print STDERR "redirecting $web.$topic to angular ... $url\n";
-        Foswiki::Func::redirectCgiQuery(undef, $url, 1);
-        return;
-      }
-
-      # enter angular mode 
+  if (defined $angular) {
+    if (Foswiki::Func::isTrue($angular)) {
+      Foswiki::Func::setSessionValue("angular", 1);
       $context->{angular} = 1;
-      
-      # switch to a neutral place internally unless there's a "skin" url param
-      unless (defined $skin) {
-        my $web = $Foswiki::cfg{UsersWebName};
-        my $topic = "SitePreferences";
-
-        #print STDERR "push context $web.$topic\n";
-        Foswiki::Func::pushTopicContext($web, $topic);
-
-      }
+    } else {
+      Foswiki::Func::clearSessionValue("angular");
+      $context->{angular} = 0;
+    }
+  } else {
+    if (!_isExcluded($web, $topic)) {
+      $context->{angular} = Foswiki::Func::getSessionValue("angular");
     }
   }
 
@@ -140,7 +92,7 @@ sub initPlugin {
   } else {
     if (Foswiki::Func::getContext()->{angular}) {
       #print STDERR "$web.$topic enters angular mode\n";
-      my $skin = getSkin();
+      my $skin = _getSkin();
       #print STDERR "skin=$skin\n";
       Foswiki::Func::setPreferencesValue("SKIN", $skin);
     }
@@ -171,15 +123,19 @@ sub initPlugin {
   return 1;
 }
 
-=begin TML
+sub _getSkin {
 
----++ finishPlugin
+  my $skin = Foswiki::Func::getPreferencesValue("SKIN");
 
-undo manipulation of view url path
+  unless ($skin =~ /\bangular\b/) {
+    my @skinPath = split(/\s*,\s*/, $skin);
+    my $baseSkin = $skinPath[-1];
+    unshift @skinPath, "angular";
+    unshift @skinPath, "angular.".$baseSkin;
+    $skin = join(", ", @skinPath);
+  }
 
-=cut
-
-sub finishPlugin {
+  return $skin;
 }
 
 
@@ -272,45 +228,6 @@ sub service {
 
 =begin TML
 
----++ dispatch($session) 
-
-entry point to an angularized Foswiki
-
-=cut
-
-sub dispatch {
-  my $session = shift;
-
-  Foswiki::Func::writeEvent("angular");
-
-  # flag this session to run in angular mode
-  Foswiki::Func::setSessionValue("angular", 1);
-
-  my $tmplData = Foswiki::Func::readTemplate('angular');
-
-  $tmplData = Foswiki::Func::expandCommonVariables($tmplData);
-  $tmplData = Foswiki::Func::renderText($tmplData);
-
-  $session->writeCompletePage($tmplData);
-}
-
-sub getSkin {
-
-  my $skin = Foswiki::Func::getPreferencesValue("SKIN");
-
-  unless ($skin =~ /\bangular\b/) {
-    my @skinPath = split(/\s*,\s*/, $skin);
-    my $baseSkin = $skinPath[-1];
-    unshift @skinPath, "angular";
-    unshift @skinPath, "angular.".$baseSkin;
-    $skin = join(", ", @skinPath);
-  }
-
-  return $skin;
-}
-
-=begin TML
-
 ---++ completePageHandler
 
 =cut
@@ -320,24 +237,33 @@ sub completePageHandler {
 
   if (Foswiki::Func::getContext()->{angular}) {
 
-    #print STDERR "angular mode ... rewriting urls\n";
+    #print STDERR "angular mode ... rewriting exclude urls\n";
 
     my $viewUrl = Foswiki::Func::getScriptUrl(undef, undef, 'view');
     my $viewUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'view');
-    my $angularUrlPath = Foswiki::Func::getScriptUrlPath(undef, undef, 'angular');
     my $webRegex = $Foswiki::regex{'webNameRegex'};
-    my $topicRegex = $Foswiki::regex{'topicNameRegex'};
+    my $topicRegex = '\w+'; # support non-wikiword topics as well ... so not using $Foswiki::regex{'topicNameRegex'} here
 
-    $_[0] =~ s/(<a[^>]*href=["'])($viewUrl|$viewUrlPath)\/($webRegex)\/($topicRegex)(.*?["'])/$1._processUrl($2, $angularUrlPath, $3, $4).$5/ge;
-  } else {
-    #print STDERR "NO angular mode\n";
+    $_[0] =~ s/(<a\s+)([^>]*href=["'])($viewUrl|$viewUrlPath)\/($webRegex)\/($topicRegex)(.*?>)/_processUrl($1, $2, $3, $4, $5, $6)/ge;
   }
 }
 
 sub _processUrl {
-  my ($view, $angular, $web, $topic) = @_;
+  my ($a, $prefix, $url, $web, $topic, $postfix) = @_;
 
-  return (_isExcluded($web, $topic)?$view:$angular).'/'.$web.'/'.$topic; 
+  my $target = '';
+  $target = "target='_self' " if _isExcluded($web, $topic);
+
+  if ($prefix =~ /target=["'][^"']["']/ || $postfix =~ /target=["'][^"']["']/) {
+    $target = '';
+  }
+
+  my $result = $a.$target.$prefix.$url.'/'.$web.'/'.$topic.$postfix;
+  
+  #print STDERR "rewriting url to $result\n" if $target;
+  #print STDERR "not rewriting url for $web.$topic\n" unless $target;
+
+  return $result;
 }
 
 

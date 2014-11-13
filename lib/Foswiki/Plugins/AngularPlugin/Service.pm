@@ -64,7 +64,7 @@ sub tmpl {
     Foswiki::Plugins::MetaDataPlugin::registerMetaData();
   }
 
-  my $template = $request->param('template')
+  my $template = $cgiRequest->param('template')
     || Foswiki::Func::getPreferencesValue('VIEW_TEMPLATE');
 
   if (!$template && $Foswiki::cfg{Plugins}{AutoTemplatePlugin}{Enabled}) {
