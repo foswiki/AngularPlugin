@@ -30,8 +30,8 @@ cake. The best of all: it makes development fun!
 %$INSTALL_INSTRUCTIONS%
 
 %IF{"context angular"
-   then="<a href='%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%?angular=0'>Angular Off</a>"
-   else="<a href='%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%?angular=1'>Angular On</a>"
+   then="<a href='%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%?angular_mode=0'>Angular Mode Off</a>"
+   else="<a href='%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%?angular_mode=1'>Angular Mode On</a>"
 }%
 
 ---++ Info

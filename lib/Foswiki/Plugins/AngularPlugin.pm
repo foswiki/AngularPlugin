@@ -41,45 +41,6 @@ our $service;
 
 =begin TML
 
----++ earlyInit()
-
-=cut
-
-sub earlyInitPlugin {
-
-  my $request = Foswiki::Func::getRequestObject();
-  my $context = Foswiki::Func::getContext();
-  my $session = $Foswiki::Plugins::SESSION;
-  my $web = $session->{webName};
-  my $topic = $session->{topicName};
-  my $angular = $request->param("angular");
-
-  if (defined $angular) {
-    if (Foswiki::Func::isTrue($angular)) {
-      Foswiki::Func::setSessionValue("angular", 1);
-      $context->{angular} = 1;
-    } else {
-      Foswiki::Func::clearSessionValue("angular");
-      $context->{angular} = 0;
-    }
-  } else {
-    if (!_isExcluded($web, $topic)) {
-      $context->{angular} = Foswiki::Func::getSessionValue("angular");
-    }
-  }
-
-  return;
-}
-
-sub _isExcluded {
-  my ($web, $topic) = @_;
-
-  my $excludePattern = $Foswiki::cfg{AngularPlugin}{Exclude};
-  return (defined($excludePattern) && "$web.$topic" =~ /$excludePattern/)?1:0;
-}
-
-=begin TML
-
 ---++ initPlugin($topic, $web, $user) -> $boolean
 
 =cut
@@ -87,14 +48,37 @@ sub _isExcluded {
 sub initPlugin {
   my ($topic, $web) = @_;
 
-  if (_isExcluded($web, $topic)) {
+  my $isExcluded = _isExcluded($web, $topic);
+  my $context = Foswiki::Func::getContext();
+
+  if ($isExcluded) {
     #print STDERR "$web.$topic excluded from angular mode\n";
+    $context->{angular} = 0;
   } else {
-    if (Foswiki::Func::getContext()->{angular}) {
-      #print STDERR "$web.$topic enters angular mode\n";
-      my $skin = _getSkin();
-      #print STDERR "skin=$skin\n";
-      Foswiki::Func::setPreferencesValue("SKIN", $skin);
+    my $request = Foswiki::Func::getRequestObject();
+    my $angular = $request->param("angular_mode");
+
+    $angular = Foswiki::Func::getSessionValue("angular")
+      unless defined $angular;
+
+    $angular = Foswiki::Func::getPreferencesValue("ANGULAR_MODE") 
+      unless defined $angular;
+
+    if (defined $angular) {
+
+      if (Foswiki::Func::isTrue($angular)) {
+        #print STDERR "$web.$topic enters angular mode\n";
+
+        Foswiki::Func::setPreferencesValue("SKIN", _getSkin());
+        Foswiki::Func::setSessionValue("angular", 1);
+        $context->{angular} = 1;
+
+      } else {
+        Foswiki::Func::setSessionValue("angular", 0);
+        $context->{angular} = 0;
+      }
+    } else {
+      $context->{angular} = Foswiki::Func::getSessionValue("angular")?1:0;
     }
   }
 
@@ -122,22 +106,6 @@ sub initPlugin {
 
   return 1;
 }
-
-sub _getSkin {
-
-  my $skin = Foswiki::Func::getPreferencesValue("SKIN");
-
-  unless ($skin =~ /\bangular\b/) {
-    my @skinPath = split(/\s*,\s*/, $skin);
-    my $baseSkin = $skinPath[-1];
-    unshift @skinPath, "angular";
-    unshift @skinPath, "angular.".$baseSkin;
-    $skin = join(", ", @skinPath);
-  }
-
-  return $skin;
-}
-
 
 =begin TML
 
@@ -264,6 +232,28 @@ sub _processUrl {
   #print STDERR "not rewriting url for $web.$topic\n" unless $target;
 
   return $result;
+}
+
+sub _isExcluded {
+  my ($web, $topic) = @_;
+
+  my $excludePattern = $Foswiki::cfg{AngularPlugin}{Exclude};
+  return (defined($excludePattern) && "$web.$topic" =~ /$excludePattern/)?1:0;
+}
+
+sub _getSkin {
+
+  my $skin = Foswiki::Func::getPreferencesValue("SKIN");
+
+  unless ($skin =~ /\bangular\b/) {
+    my @skinPath = split(/\s*,\s*/, $skin);
+    my $baseSkin = $skinPath[-1];
+    unshift @skinPath, "angular";
+    unshift @skinPath, "angular.".$baseSkin;
+    $skin = join(", ", @skinPath);
+  }
+
+  return $skin;
 }
 
 
