@@ -13,7 +13,7 @@ sub new {
   my $this = bless(
     $class->SUPER::new(
       name => 'ngAnimate',
-      version => '1.3.3',
+      version => '1.3.4',
       author => 'Brat Tech LLC, Google and community',
       homepage => 'https://angularjs.org',
       javascript => ['angular-animate.js', ],
