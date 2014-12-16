@@ -13,7 +13,7 @@ sub new {
   my $this = bless(
     $class->SUPER::new(
       name => 'ngSanitize',
-      version => '1.3.4',
+      version => '1.3.8',
       author => 'Brat Tech LLC, Google and community',
       homepage => 'https://angularjs.org',
       javascript => ['angular-sanitize.js', ],

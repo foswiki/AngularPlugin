@@ -3,7 +3,7 @@ TARGET=angular-sanitize.js
 
 -include $(FOSWIKI_ROOT)/pub/System/JQueryPlugin/Makefile.include
 
-angular-animate.uncompressed.js: ../../vendor/angular.js/build/angular-sanitize.js
+angular-sanitize.uncompressed.js: ../../vendor/angular.js/build/angular-sanitize.js
 	@echo getting $@ from vendor
 	@cp $< $@
 

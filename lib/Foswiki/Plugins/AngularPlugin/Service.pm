@@ -73,7 +73,8 @@ sub tmpl {
   }
   $template ||= "view";
 
-  Foswiki::Func::loadTemplate($template);
+  Foswiki::Func::readTemplate("view") 
+    unless Foswiki::Func::readTemplate($template);
 
   my $expand = $request->param("expand") || [];
   my $zones = $request->param("zones") || [];
