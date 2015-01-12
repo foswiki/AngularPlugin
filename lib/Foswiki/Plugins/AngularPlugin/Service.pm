@@ -142,6 +142,7 @@ sub expandTemplate {
 
   my $text = $meta->text;
   $text =~ s/^\s*%(START|STOP)INCLUDE%/<!-- -->/g;
+  $text .= "\n" unless $text =~ /\n$/; # make TML happy
 
   my $tmpl = Foswiki::Func::expandTemplate($template);
   $tmpl =~ s/\%TEXT\%/$text/g;
