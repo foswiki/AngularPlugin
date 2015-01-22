@@ -38,6 +38,22 @@ sub tmpl {
     $session->{request}->action("view");
   }
 
+  my $cgiRequest = Foswiki::Func::getRequestObject();
+  $cgiRequest->method("jsonrpc");
+
+  Foswiki::Func::pushTopicContext($web, $topic);
+
+  my $cache = $session->{cache};
+  if ($cache) {
+    my $cachedPage = $cache->getPage($web, $topic);
+    if ($cachedPage) {
+      #print STDERR "found angular tmpl in cache for $web.$topic\n";
+      Foswiki::Func::popTopicContext();
+      return $this->json->decode($cachedPage->{data});
+    }
+    #print STDERR "computing angular tmpl for $web.$topic\n";
+  }
+
   throw Foswiki::Contrib::JsonRpcContrib::Error(404, "Topic does not exist")
     unless Foswiki::Func::topicExists($web, $topic);
 
@@ -49,15 +65,12 @@ sub tmpl {
     unless Foswiki::Func::checkAccessPermission("VIEW", $wikiName, $text, $topic, $web, $meta);
 
   # propagate json-rpc params to cgi params
-  my $cgiRequest = Foswiki::Func::getRequestObject();
   while (my ($key, $val) = each %{$request->param('urlparams')}) {
     $cgiRequest->param($key, $val);
   }
 
   # undo some jsonr-rpc params in cgi request obj ... required for TOC links
   $cgiRequest->delete("POSTDATA");
-
-  Foswiki::Func::pushTopicContext($web, $topic);
 
   if ($Foswiki::cfg{Plugins}{MetaDataPlugin}{Enabled}) {
     require Foswiki::Plugins::MetaDataPlugin;
@@ -99,6 +112,13 @@ sub tmpl {
   # return requested zones
   foreach my $item (@$zones) {
     $result->{zones}{$item} = $this->getZoneObject($item, $meta),;
+  }
+
+  if ($cache) {
+    my $oldHttpCompress = $Foswiki::cfg{HttpCompress};
+    $Foswiki::cfg{HttpCompress} = 0;
+    $cache->cachePage("application/json", $this->json->encode($result));
+    $Foswiki::cfg{HttpCompress} = $oldHttpCompress;
   }
 
   Foswiki::Func::popTopicContext();
@@ -167,6 +187,16 @@ sub expandTemplate {
   $result =~ s/\s*&#37;{(<\/pre>)}\%/$1/g;
 
   return $result;
+}
+
+sub json {
+  my $this = shift;
+
+  unless (defined $this->{json}) {
+    $this->{json} = JSON->new->convert_blessed(1);
+  }
+
+  return $this->{json};
 }
 
 1;
