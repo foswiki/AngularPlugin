@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.3.8-local+sha.85758ce
- * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.4.0-local+sha.bd6c04a
+ * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, angular, undefined) {'use strict';
@@ -839,7 +839,8 @@ angular.module('ngAnimate', ['ng'])
        * promise that was returned when the animation was started.
        *
        * ```js
-       * var promise = $animate.addClass(element, 'super-long-animation').then(function() {
+       * var promise = $animate.addClass(element, 'super-long-animation');
+       * promise.then(function() {
        *   //this will still be called even if cancelled
        * });
        *
@@ -1332,8 +1333,7 @@ angular.module('ngAnimate', ['ng'])
           } else if (lastAnimation.event == 'setClass') {
             animationsToCancel.push(lastAnimation);
             cleanup(element, className);
-          }
-          else if (runningAnimations[className]) {
+          } else if (runningAnimations[className]) {
             var current = runningAnimations[className];
             if (current.event == animationEvent) {
               skipAnimation = true;
@@ -1874,7 +1874,7 @@ angular.module('ngAnimate', ['ng'])
           return;
         }
 
-        if (!staggerTime && styles) {
+        if (!staggerTime && styles && Object.keys(styles).length > 0) {
           if (!timings.transitionDuration) {
             element.css('transition', timings.animationDuration + 's linear all');
             appliedStyles.push('transition');
