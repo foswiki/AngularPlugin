@@ -5,6 +5,7 @@ lib/Foswiki/Plugins/AngularPlugin/Aria.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Config.spec 0644
 lib/Foswiki/Plugins/AngularPlugin/Cookies.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Core.pm 0644
+lib/Foswiki/Plugins/AngularPlugin/DEPENDENCIES 0644
 lib/Foswiki/Plugins/AngularPlugin/Fx.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Knob.pm 0644
 lib/Foswiki/Plugins/AngularPlugin/Loader.pm 0644
@@ -24,6 +25,7 @@ lib/Foswiki/Plugins/AngularPlugin/Touch.pm 0644
 pub/System/AngularPlugin/angular.js 0644
 pub/System/AngularPlugin/angular.js.gz 0644
 pub/System/AngularPlugin/angular.uncompressed.js 0644
+pub/System/AngularPlugin/i18n/Makefile 0644
 pub/System/AngularPlugin/logo.png 0644
 pub/System/AngularPlugin/Makefile 0644
 pub/System/AngularPlugin/modules/loadingBar/loading-bar.css 0644
@@ -94,7 +96,6 @@ pub/System/AngularPlugin/modules/ui.knob/jquery-knob.js.gz 0644
 pub/System/AngularPlugin/modules/ui.knob/jquery-knob.uncompressed.js 0644
 pub/System/AngularPlugin/modules/ui.knob/Makefile 0644
 pub/System/AngularPlugin/modules/ui.slider/Makefile 0644
-pub/System/AngularPlugin/modules/ui.slider/mini.slider.uncompressed.js 0644
 pub/System/AngularPlugin/modules/ui.slider/slider.js 0644
 pub/System/AngularPlugin/modules/ui.slider/slider.js.gz 0644
 pub/System/AngularPlugin/modules/ui.slider/slider.uncompressed.js 0644
