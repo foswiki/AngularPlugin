@@ -16,6 +16,15 @@ $provide.value("$locale", {
       "Jumaat",
       "Sabtu"
     ],
+    "ERANAMES": [
+      "S.M.",
+      "TM"
+    ],
+    "ERAS": [
+      "S.M.",
+      "TM"
+    ],
+    "FIRSTDAYOFWEEK": 0,
     "MONTH": [
       "Januari",
       "Februari",
@@ -52,6 +61,10 @@ $provide.value("$locale", {
       "Okt",
       "Nov",
       "Dis"
+    ],
+    "WEEKENDRANGE": [
+      5,
+      6
     ],
     "fullDate": "EEEE, d MMMM y",
     "longDate": "d MMMM y",
@@ -92,6 +105,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "ms-latn",
-  "pluralCat": function (n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
+  "pluralCat": function(n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

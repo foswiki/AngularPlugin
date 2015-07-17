@@ -10,7 +10,7 @@ use Foswiki::Plugins::AngularPlugin ();
 use Foswiki::Contrib::JsonRpcContrib::Error ();
 use JSON ();
 use Error qw( :try );
-use Data::Dump qw(dump);
+#use Data::Dump qw(dump);
 
 sub new {
   my $class = shift;
@@ -43,13 +43,18 @@ sub tmpl {
 
   Foswiki::Func::pushTopicContext($web, $topic);
 
+  if (Foswiki::Func::getContext()->{NatSkinPluginEnabled}) {
+    require Foswiki::Plugins::NatSkinPlugin;
+    Foswiki::Plugins::NatSkinPlugin::init();
+  }
+
   my $cache = $session->{cache};
   if ($cache) {
     my $cachedPage = $cache->getPage($web, $topic);
     if ($cachedPage) {
       #print STDERR "found angular tmpl in cache for $web.$topic\n";
       Foswiki::Func::popTopicContext();
-      return $this->json->decode($cachedPage->{data});
+      return $this->json->decode(Encode::decode_utf8($cachedPage->{data}));
     }
     #print STDERR "computing angular tmpl for $web.$topic\n";
   }
@@ -140,8 +145,14 @@ sub getZoneObject {
   }
 
   my @zone = ();
+  my $excludeFromZone = $Foswiki::cfg{AngularPlugin}{ExcludeFromZone};
 
   foreach my $item (grep { $_->{text} } @total) {
+    if ($excludeFromZone && $item->{id} =~ /$excludeFromZone/g) {
+      #print STDERR "excluding $item->{id}\n"; 
+      next;
+    }
+    #print STDERR "id=$item->{id}\n"; 
     my @requires = map { $_->{id} } @{$item->{requires}};
 
     my $text = $meta->renderTML($meta->expandMacros($item->{text}));
@@ -177,8 +188,7 @@ sub expandTemplate {
   }
 
   # cleanup stuff
-  $result =~ s/<nop>//g;
-  $result =~ s/<\/?noautolink>//g;
+  $result =~ s/<\/?(?:dirtyarea|nop|noautolink|sticky|literal)>//g;
   $result =~ s/<!--[^\[<].*?-->//g;
   $result =~ s/^\s*$//gms;
   $result =~ s/<p><\/p>\s*([^<>]+?)\s*(?=<p><\/p>)/<p class='p'>$1<\/p>\n\n/gs;

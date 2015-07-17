@@ -34,6 +34,15 @@ $provide.value("$locale", {
       "va\u014bd\u025br\u025bdi",
       "m\u0254n\u0254 s\u0254ndi"
     ],
+    "ERANAMES": [
+      "BCE",
+      "CE"
+    ],
+    "ERAS": [
+      "BCE",
+      "CE"
+    ],
+    "FIRSTDAYOFWEEK": 0,
     "MONTH": [
       "pamba",
       "wanja",
@@ -70,6 +79,10 @@ $provide.value("$locale", {
       "nyukul",
       "11",
       "\u0253ul\u0253us\u025b"
+    ],
+    "WEEKENDRANGE": [
+      5,
+      6
     ],
     "fullDate": "EEEE dd MMMM y",
     "longDate": "d MMMM y",
@@ -110,6 +123,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "kkj-cm",
-  "pluralCat": function (n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
+  "pluralCat": function(n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

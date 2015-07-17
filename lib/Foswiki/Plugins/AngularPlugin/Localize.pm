@@ -13,7 +13,7 @@ sub new {
   my $this = bless(
     $class->SUPER::new(
       name => 'ngLocalize',
-      version => '1.1.3',
+      version => '1.1.4',
       author => 'Rahul Doshi',
       homepage => 'https://github.com/doshprompt/angular-localization',
       javascript => ['angular-localization.js', ],

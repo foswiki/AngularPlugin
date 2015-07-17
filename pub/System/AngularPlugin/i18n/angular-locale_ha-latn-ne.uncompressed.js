@@ -31,9 +31,18 @@ $provide.value("$locale", {
       "Talata",
       "Laraba",
       "Alhamis",
-      "Jumma'a",
+      "Jumma\u02bca",
       "Asabar"
     ],
+    "ERANAMES": [
+      "Kafin haihuwar annab",
+      "Bayan haihuwar annab"
+    ],
+    "ERAS": [
+      "KHAI",
+      "BHAI"
+    ],
+    "FIRSTDAYOFWEEK": 0,
     "MONTH": [
       "Janairu",
       "Faburairu",
@@ -70,6 +79,10 @@ $provide.value("$locale", {
       "Okt",
       "Nuw",
       "Dis"
+    ],
+    "WEEKENDRANGE": [
+      5,
+      6
     ],
     "fullDate": "EEEE, d MMMM, y",
     "longDate": "d MMMM, y",
@@ -110,6 +123,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "ha-latn-ne",
-  "pluralCat": function (n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
+  "pluralCat": function(n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

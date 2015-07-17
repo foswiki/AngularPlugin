@@ -28,18 +28,27 @@ $provide.value("$locale", {
     "DAY": [
       "Betutab tisap",
       "Betut netai",
-      "Betutab aeng'",
+      "Betutab aeng\u2019",
       "Betutab somok",
-      "Betutab ang'wan",
+      "Betutab ang\u2019wan",
       "Betutab mut",
       "Betutab lo"
     ],
+    "ERANAMES": [
+      "Amait kesich Jesu",
+      "Kokakesich Jesu"
+    ],
+    "ERAS": [
+      "AM",
+      "KO"
+    ],
+    "FIRSTDAYOFWEEK": 0,
     "MONTH": [
       "Mulgul",
-      "Ng'atyato",
+      "Ng\u2019atyato",
       "Kiptamo",
       "Iwat kut",
-      "Ng'eiyet",
+      "Ng\u2019eiyet",
       "Waki",
       "Roptui",
       "Kipkogaga",
@@ -70,6 +79,10 @@ $provide.value("$locale", {
       "Epe",
       "Tai",
       "Aen"
+    ],
+    "WEEKENDRANGE": [
+      5,
+      6
     ],
     "fullDate": "EEEE, d MMMM y",
     "longDate": "d MMMM y",
@@ -110,6 +123,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "kln",
-  "pluralCat": function (n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
+  "pluralCat": function(n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

@@ -1,8 +1,8 @@
 /**
- * angular-localization :: v1.1.3 :: 2014-10-15
+ * angular-localization :: v1.2.1 :: 2015-04-17
  * web: https://github.com/doshprompt/angular-localization
  *
- * Copyright (c) 2014 | Rahul Doshi
+ * Copyright (c) 2015 | Rahul Doshi
  * License: MIT
  */
 ;(function (angular, window, document, undefined) {
@@ -26,7 +26,8 @@ angular.module('ngLocalize.Events', [])
 angular.module('ngLocalize', ['ngSanitize', 'ngLocalize.Config', 'ngLocalize.Events', 'ngLocalize.InstalledLanguages'])
     .service('locale', ['$injector', '$http', '$q', '$log', '$rootScope', '$window', 'localeConf', 'localeEvents', 'localeSupported', 'localeFallbacks',
         function ($injector, $http, $q, $log, $rootScope, $window, localeConf, localeEvents, localeSupported, localeFallbacks) {
-            var currentLocale,
+            var TOKEN_REGEX = new RegExp('^[\\w\\.-]+\\.[\\w\\s\\.-]+\\w(:.*)?$'),
+                currentLocale,
                 deferrences,
                 bundles,
                 cookieStore;
@@ -36,7 +37,7 @@ angular.module('ngLocalize', ['ngSanitize', 'ngLocalize.Config', 'ngLocalize.Eve
             }
 
             function isToken(str) {
-                return (str && str.length && new RegExp('^[\\w\\.-]+\\.[\\w\\.-]+\\w(:.*)?$').test(str));
+                return (str && str.length && TOKEN_REGEX.test(str));
             }
 
             function getPath(tok) {
@@ -252,7 +253,21 @@ angular.module('ngLocalize', ['ngSanitize', 'ngLocalize.Config', 'ngLocalize.Eve
             }
 
             function setLocale(value) {
-                var lang = localeSupported.indexOf(value) != -1 ? value : localeFallbacks[value.split('-')[0]] || localeConf.defaultLocale;
+                var lang;
+
+                if (angular.isString(value)) {
+                    value = value.trim();
+                    if (localeSupported.indexOf(value) != -1) {
+                        lang = value;
+                    } else {
+                        lang = localeFallbacks[value.split('-')[0]]
+                        if (angular.isUndefined(lang)) {
+                            lang = localeConf.defaultLocale;
+                        }
+                    }
+                } else {
+                    lang = localeConf.defaultLocale;
+                }
 
                 if (lang != currentLocale) {
                     bundles = {};
@@ -272,7 +287,7 @@ angular.module('ngLocalize', ['ngSanitize', 'ngLocalize.Config', 'ngLocalize.Eve
                 return currentLocale;
             }
 
-            setLocale((cookieStore ? cookieStore.get(localeConf.cookieName) : localeConf.defaultLocale) || $window.navigator.userLanguage || $window.navigator.language);
+            setLocale(cookieStore ? cookieStore.get(localeConf.cookieName) : $window.navigator.userLanguage || $window.navigator.language);
 
             return {
                 ready: ready,
@@ -287,9 +302,13 @@ angular.module('ngLocalize', ['ngSanitize', 'ngLocalize.Config', 'ngLocalize.Eve
     ])
     .filter('i18n', ['locale',
         function (locale) {
-            return function (input, args) {
+            var i18nFilter = function (input, args) {
                 return locale.getString(input, args);
             };
+
+            i18nFilter.$stateful = true;
+
+            return i18nFilter;
         }
     ])
     .directive('i18n', ['$sce', 'locale', 'localeEvents', 'localeConf',
@@ -393,5 +412,5 @@ angular.module('ngLocalize.InstalledLanguages', [])
         'en': 'en-US'
     });
 angular.module('ngLocalize.Version', [])
-    .constant('localeVer', '1.1.3');
+    .constant('localeVer', '1.2.1');
 })(window.angular, window, document);

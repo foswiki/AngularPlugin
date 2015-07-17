@@ -20,7 +20,7 @@ angular.module('ui.slider', []).value('uiSliderConfig',{}).directive('uiSlider',
                 };
 
                 // convenience properties
-                var properties = ['min', 'max', 'step'];
+                var properties = ['min', 'max', 'step', 'lowerBound', 'upperBound'];
                 var useDecimals = (!angular.isUndefined(attrs.useDecimals)) ? true : false;
 
                 var init = function() {
@@ -75,8 +75,49 @@ angular.module('ui.slider', []).value('uiSliderConfig',{}).directive('uiSlider',
 
                 // Update model value from slider
                 elm.bind('slide', function(event, ui) {
+                    var valuesChanged;
+
+                    if (ui.values) {
+                        var boundedValues = ui.values.slice();
+
+                        if (options.lowerBound && boundedValues[0] < options.lowerBound) {
+                            boundedValues[0] = Math.max(boundedValues[0], options.lowerBound);
+                        }
+                        if (options.upperBound && boundedValues[1] > options.upperBound) {
+                            boundedValues[1] = Math.min(boundedValues[1], options.upperBound);
+                        }
+
+                        if (boundedValues[0] !== ui.values[0] || boundedValues[1] !== ui.values[1]) {
+                            valuesChanged = true;
+                            ui.values = boundedValues;
+                        }
+                    } else {
+                        var boundedValue = ui.value;
+
+                        if (options.lowerBound && boundedValue < options.lowerBound) {
+                            boundedValue = Math.max(boundedValue, options.lowerBound);
+                        }
+                        if (options.upperBound && boundedValue > options.upperBound) {
+                            boundedValue = Math.min(boundedValue, options.upperBound);
+                        }
+
+                        if (boundedValue !== ui.value) {
+                            valuesChanged = true;
+                            ui.value = boundedValue;
+                        }
+                    }
+
+
                     ngModel.$setViewValue(ui.values || ui.value);
                     scope.$apply();
+
+                    if (valuesChanged) {
+                        setTimeout(function() {
+                            elm.slider('value', ui.values || ui.value);
+                        }, 0);
+
+                        return false;
+                    }
                 });
 
                 // Update slider from model value
@@ -84,7 +125,7 @@ angular.module('ui.slider', []).value('uiSliderConfig',{}).directive('uiSlider',
                     init();
                     var method = options.range === true ? 'values' : 'value';
                     
-                    if (!options.range && isNaN(ngModel.$viewValue) && !(ngModel.$viewValue instanceof Array)) {
+                    if (options.range !== true && isNaN(ngModel.$viewValue) && !(ngModel.$viewValue instanceof Array)) {
                         ngModel.$viewValue = 0;
                     }
                     else if (options.range && !angular.isDefined(ngModel.$viewValue)) {
@@ -129,11 +170,13 @@ angular.module('ui.slider', []).value('uiSliderConfig',{}).directive('uiSlider',
                 }, true);
 
                 function destroy() {
-                    elm.slider('destroy');
+                    if (elm.hasClass('ui-slider')) {
+                        elm.slider('destroy');
+                    }
                 }
-                scope.$on("$destroy", function() {
-                    destroy();
-                });
+
+                scope.$on("$destroy", destroy);
+                elm.one('$destroy', destroy);
             };
 
             var postLink = function (scope, element, attrs, ngModel) {

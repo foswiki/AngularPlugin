@@ -1,4 +1,10 @@
-REPOS=angular.js ui-slider ngFx angular-loading-bar angular-localization
+REPOS=\
+  angular.js \
+  ui-slider \
+  ngFx \
+  angular-loading-bar \
+  angular-localization
+
 
 .PHONY: $(REPOS)
 
@@ -6,7 +12,7 @@ all: $(REPOS)
 
 angular.js: 
 	test -d $@ || git clone git@github.com:angular/angular.js.git
-	cd $@ && git pull && grunt buildall
+	cd $@ && git pull && grunt
 
 ui-slider: 
 	test -d $@ || git clone git@github.com:angular-ui/ui-slider.git 

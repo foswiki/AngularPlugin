@@ -22,8 +22,8 @@ function getVF(n, opt_precision) {
 $provide.value("$locale", {
   "DATETIME_FORMATS": {
     "AMPMS": [
-      "AM",
-      "PM"
+      "a.m.",
+      "p.m."
     ],
     "DAY": [
       "zondag",
@@ -34,6 +34,15 @@ $provide.value("$locale", {
       "vrijdag",
       "zaterdag"
     ],
+    "ERANAMES": [
+      "voor Christus",
+      "na Christus"
+    ],
+    "ERAS": [
+      "v.Chr.",
+      "n.Chr."
+    ],
+    "FIRSTDAYOFWEEK": 0,
     "MONTH": [
       "januari",
       "februari",
@@ -70,6 +79,10 @@ $provide.value("$locale", {
       "okt.",
       "nov.",
       "dec."
+    ],
+    "WEEKENDRANGE": [
+      5,
+      6
     ],
     "fullDate": "EEEE d MMMM y",
     "longDate": "d MMMM y",
@@ -110,6 +123,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "nl",
-  "pluralCat": function (n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
+  "pluralCat": function(n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
 });
 }]);
