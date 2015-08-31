@@ -13,7 +13,7 @@ sub new {
   my $this = bless(
     $class->SUPER::new(
       name => 'loadingBar',
-      version => '0.7.1',
+      version => '0.8.0',
       author => 'Wes Cruver',
       homepage => 'https://github.com/chieffancypants/angular-loading-bar',
       css => ['loading-bar.css', ],

@@ -193,8 +193,8 @@ sub expandTemplate {
   $result =~ s/^\s*$//gms;
   $result =~ s/<p><\/p>\s*([^<>]+?)\s*(?=<p><\/p>)/<p class='p'>$1<\/p>\n\n/gs;
   $result =~ s/\s*<\/p>(?:\s*<p><\/p>)*/<\/p>\n/gs;    # remove useless <p>s
-  $result =~ s/\%{(<pre[^>]*>)}&#37;\s*/$1/g;
-  $result =~ s/\s*&#37;{(<\/pre>)}\%/$1/g;
+  $result =~ s/\%\{(<pre[^>]*>)\}&#37;\s*/$1/g;
+  $result =~ s/\s*&#37;\{(<\/pre>)\}\%/$1/g;
 
   return $result;
 }
