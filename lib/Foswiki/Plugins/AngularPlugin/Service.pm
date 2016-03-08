@@ -10,7 +10,6 @@ use Foswiki::Plugins::AngularPlugin ();
 use Foswiki::Contrib::JsonRpcContrib::Error ();
 use JSON ();
 use Error qw( :try );
-#use Data::Dump qw(dump);
 
 sub new {
   my $class = shift;
@@ -136,18 +135,10 @@ sub getZoneObject {
 
   my $session = $Foswiki::Plugins::SESSION;
 
-  my @total;
-  my %visited;
-  my @zoneIDs = values %{$session->{_zones}{$zone}};
-
-  foreach my $zoneID (@zoneIDs) {
-    $session->_visitZoneID($zoneID, \%visited, \@total);
-  }
-
   my @zone = ();
   my $excludeFromZone = $Foswiki::cfg{AngularPlugin}{ExcludeFromZone};
 
-  foreach my $item (grep { $_->{text} } @total) {
+  foreach my $item (grep { $_->{text} } $this->getZoneItems($zone)) {
     if ($excludeFromZone && $item->{id} =~ /$excludeFromZone/g) {
       #print STDERR "excluding $item->{id}\n"; 
       next;
@@ -166,6 +157,31 @@ sub getZoneObject {
   }
 
   return \@zone;
+}
+
+sub getZoneItems {
+  my ($this, $zone) = @_;
+
+  my $session = $Foswiki::Plugins::SESSION;
+  my $zonesHandler;
+
+  if ($session->can("zones")) {
+    # Foswiki > 2.0.3: zones are stored in a sub-component
+    $zonesHandler = $session->zones();
+  } else {
+    # Foswiki <= 2.0.3: zones are stored in the session object
+    $zonesHandler = $session;
+  }
+
+  my @zoneItems = values %{$zonesHandler->{_zones}{$zone}};
+  my %visited = ();
+  my @result = ();
+
+  foreach my $item (@zoneItems) {
+    $zonesHandler->_visitZoneID($item, \%visited, \@result);
+  }
+
+  return @result;
 }
 
 sub expandTemplate {
@@ -213,7 +229,7 @@ sub json {
 __END__
 Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 
-Copyright (C) 2014-2015 Michael Daum http://michaeldaumconsulting.com
+Copyright (C) 2014-2016 Michael Daum http://michaeldaumconsulting.com
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

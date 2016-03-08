@@ -9,6 +9,7 @@ AngularPlugin_installer
 AngularPlugin_installer.pl
 pub/System/AngularPlugin/angular.js
 pub/System/AngularPlugin/vendor/*/
+pub/System/AngularPlugin/modules/loadingBar/loading-bar.js
 pub/System/AngularPlugin/modules/ngAnimate/angular-animate.js
 pub/System/AngularPlugin/modules/ngAria/angular-aria.js
 pub/System/AngularPlugin/modules/ngCookies/angular-cookies.js
